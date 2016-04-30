@@ -4,4 +4,16 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/MenuLevel.unity
+  - enabled: 1
+    path: Assets/Prototype1.unity
+  - enabled: 1
+    path: Assets/Prototype2.unity
+  - enabled: 1
+    path: Assets/Prototype3.unity
+  - enabled: 1
+    path: Assets/Prototype4.unity
+  - enabled: 1
+    path: Assets/Prototype5.unity
