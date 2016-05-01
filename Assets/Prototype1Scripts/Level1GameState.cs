@@ -36,6 +36,14 @@ public class Level1GameState : MonoBehaviour
                 map[x, y] = Instantiate(tile) as GameObject;
                 map[x, y].transform.position = new Vector2(mWorldBound.min.x + x + (map[x,y].transform.localScale.x / 2f), //Start drawing tiles at the upper left corner
                                                            mWorldBound.min.y + y + (map[x, y].transform.localScale.y / 2f));
+                float random = Random.Range(0f, 100f);
+                //Setting a tile as collideable or not at random
+                if (random > 75f) {
+                    TileBehavior behavior = map[x, y].GetComponent<TileBehavior>();
+                    behavior.setCollideable(true);
+                    SpriteRenderer tr = behavior.GetComponent<SpriteRenderer>();
+                    tr.color = Color.black;
+                 }
                
             }
         }
