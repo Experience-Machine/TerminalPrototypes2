@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Map : MonoBehaviour
 {
@@ -71,13 +72,90 @@ public class Map : MonoBehaviour
 	
     public Tile getTile(int x, int y)
     {
-        return map[x, y];
+        if (x >= 0 && x < mapMaxX && y >= 0 && y < mapMaxY)
+            return map[x, y];
+        return null;
     }
 
     // Using getTile, then .gameObject functions the same
     public GameObject getTileObject(int x, int y)
     {
-        return map[x, y].gameObject;
+        if(x >= 0 && x <= mapMaxX && y >= 0 && y <= mapMaxY)
+            return map[x, y].gameObject;
+        return null;
+    }
+
+    public void setTileColor(int x, int y, Color c)
+    {
+        map[x, y].currentColor = c;
+        map[x, y].tileRenderer.color = c;
+    }
+
+    public void highlightPlus(int x, int y, Color c)
+    {
+        if (y > 0)
+        {
+            setTileColor(x, y - 1, c);
+        }
+        if (x > 0)
+        {
+            setTileColor(x - 1, y, c);
+        }
+        setTileColor(x, y, c);
+        if (x < mapMaxX)
+        {
+            setTileColor(x + 1, y, c);
+        }
+        if (y < mapMaxY)
+        {
+            setTileColor(x, y + 1, c);
+        }
+    }
+
+    public Tile[] getRangeTiles(int x, int y, int range)
+    {
+        Tile start = getTile(x, y);
+        List<Tile> t = new List<Tile>();
+        getRangeTileHelper(x, y, range, t);
+        t.Remove(start);
+        Tile[] tiles = new Tile[t.Count];
+        tiles = t.ToArray();
+        return tiles;
+    }
+
+    private void getRangeTileHelper(int x, int y, int range, List<Tile> t)
+    {
+        if (range == 0)
+            return;
+        Tile workingTile;
+        
+        workingTile = getTile(x - 1, y);
+        if (workingTile != null && !t.Contains(workingTile))
+        {
+            t.Add(workingTile);
+        }
+        getRangeTileHelper(x - 1, y, range - 1, t);
+
+        workingTile = getTile(x, y - 1);
+        if (workingTile != null && !t.Contains(workingTile))
+        {
+            t.Add(workingTile);
+        }
+        getRangeTileHelper(x, y - 1, range - 1, t);
+
+        workingTile = getTile(x + 1, y);
+        if (workingTile != null && !t.Contains(workingTile))
+        {
+            t.Add(workingTile);
+        }
+        getRangeTileHelper(x + 1, y, range - 1, t);
+
+        workingTile = getTile(x, y + 1);
+        if (workingTile != null && !t.Contains(workingTile))
+        {
+            t.Add(workingTile);
+        }
+        getRangeTileHelper(x, y + 1, range - 1, t);
     }
 
     // Removes every Tile under this map

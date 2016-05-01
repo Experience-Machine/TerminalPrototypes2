@@ -8,6 +8,12 @@ public class Tile : MonoBehaviour
     private static Map map;
     public SpriteRenderer tileRenderer;
 
+    // The present color of the tile. This can be temporarily change
+    //  by mouseover, but the tile returns to 'curent color' after
+    //  mouse-out.
+    public Color currentColor;
+    private static Color highlightColor = new Color(.3f,.3f,.3f,.15f);
+
     //private static GameObject tileSelector;
     //private GameObject selectRef;
     // Use this for initialization
@@ -24,7 +30,9 @@ public class Tile : MonoBehaviour
             tileRenderer = gameObject.GetComponent<SpriteRenderer>();
         }
         //renderer.enabled = true;
-        tileRenderer.color = Color.grey;
+        currentColor = Color.grey;
+        tileRenderer.color = currentColor;
+
         /*
         if (tileSelector == null)
         {
@@ -43,7 +51,8 @@ public class Tile : MonoBehaviour
     void OnMouseEnter()
     {
         //renderer.enabled = true;
-        tileRenderer.color = Color.cyan;
+        if(tileRenderer != null)
+            tileRenderer.color = currentColor + highlightColor;
 
         //Debug.Log(selectRef.transform.position.ToString() + " collideable: " + collideable);
 
@@ -51,7 +60,7 @@ public class Tile : MonoBehaviour
     void OnMouseExit()
     {
         //renderer.enabled = true;
-        tileRenderer.color = Color.grey;
+        tileRenderer.color = currentColor;
 
         //Destroy(selectRef);
         //selectRef = null;
