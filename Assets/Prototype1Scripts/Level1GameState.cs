@@ -1,5 +1,6 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;  
+using UnityEngine.SceneManagement;
+using System.Collections;  
         // for SceneManager
 
 
@@ -29,7 +30,20 @@ public class Level1GameState : MonoBehaviour
         }
 
         characterBeh.gameObject.transform.position = new Vector2(-3.5f, -1.5f);
-	}
+
+        //Randomly generate some collideable tiles
+        for (int i = 0; i < 10; i++) {
+            float randomX = Random.Range(0f, 10f);
+            float randomY = Random.Range(0f, 10f);
+
+            Tile t = map.getTile((int)randomX, (int)randomY);
+       
+            t.setCollideable(true);
+            t.currentColor = Color.green;
+            t.tileRenderer.color = Color.green;
+        }
+
+    }
 
 	// Update is called once per frame
 	void Update () 
@@ -49,14 +63,14 @@ public class Level1GameState : MonoBehaviour
             setColor = false;
         }
 
-        /* Example code for manipulating Tiles
-       int randX = (int)Random.Range(0, 10f);
+        // Example code for manipulating Tiles
+       /*int randX = (int)Random.Range(0, 10f);
        int randY = (int)Random.Range(0, 10f);
 
        Tile t = map.getTile(randX, randY);
        t.tileRenderer.color = Random.ColorHSV();
        t.gameObject.transform.name = "MODIFIED";
-       t.setCollideable(false);
-       */
+       t.setCollideable(false);*/
+       
 	}
 }

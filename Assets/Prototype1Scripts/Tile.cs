@@ -4,7 +4,7 @@ using System.Collections;
 public class Tile : MonoBehaviour
 {
 
-    private bool collideable;
+    public bool collideable;
     private static Map map;
     public SpriteRenderer tileRenderer;
 
@@ -27,25 +27,34 @@ public class Tile : MonoBehaviour
             map = GameObject.Find("Map").GetComponent<Map>();
         }
 
-        collideable = false;
+        //collideable = false;
         if (tileRenderer == null)
         {
             tileRenderer = gameObject.GetComponent<SpriteRenderer>();
         }
-        //renderer.enabled = true;
+
+        //defaultColor = Color.grey;
+        //currentColor = defaultColor;
+        //tileRenderer.color = currentColor;
+
+    }
+
+    void Awake()
+    {
+        if (map == null)
+        {
+            map = GameObject.Find("Map").GetComponent<Map>();
+        }
+        if (tileRenderer == null)
+        {
+            tileRenderer = gameObject.GetComponent<SpriteRenderer>();
+        }
         defaultColor = Color.grey;
         currentColor = defaultColor;
         tileRenderer.color = currentColor;
-
-        /*
-        if (tileSelector == null)
-        {
-            tileSelector = Resources.Load("Prefabs/TileSelector") as GameObject;
-        }
-        selectRef = null;
-        */
+        collideable = false;
     }
-       
+
     // Update is called once per frame
     void Update () 
     {

@@ -67,8 +67,25 @@ public class Map : MonoBehaviour
         }
         selectRef = null;
 
+        //drawMap();
+
+    }
+
+    void Awake()
+    {
+        if (tile == null)
+        {
+            tile = Resources.Load("Prefabs/Tile") as GameObject;
+        }
+
+        if (tileSelector == null)
+        {
+            tileSelector = Resources.Load("Prefabs/TileSelector") as GameObject;
+        }
+        selectRef = null;
+
         drawMap();
-	}
+    }
 	
     public Tile getTile(int x, int y)
     {
@@ -217,6 +234,8 @@ public class Map : MonoBehaviour
                                                            minYPos + y + (map[x, y].transform.localScale.y / 2f));
                 map[x, y].x = x;
                 map[x, y].y = y;
+
+                
             }
         }
     }
