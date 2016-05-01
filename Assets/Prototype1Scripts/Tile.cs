@@ -5,13 +5,18 @@ public class Tile : MonoBehaviour
 {
 
     private bool collideable;
+    private static Map map;
     public SpriteRenderer tileRenderer;
 
-    private static GameObject tileSelector;
-    private GameObject selectRef;
+    //private static GameObject tileSelector;
+    //private GameObject selectRef;
     // Use this for initialization
     void Start () 
     {
+        if(map == null)
+        {
+            map = GameObject.Find("Map").GetComponent<Map>();
+        }
 
         collideable = false;
         if (tileRenderer == null)
@@ -20,13 +25,13 @@ public class Tile : MonoBehaviour
         }
         //renderer.enabled = true;
         tileRenderer.color = Color.grey;
-
+        /*
         if (tileSelector == null)
         {
             tileSelector = Resources.Load("Prefabs/TileSelector") as GameObject;
         }
         selectRef = null;
-
+        */
     }
        
     // Update is called once per frame
@@ -55,12 +60,14 @@ public class Tile : MonoBehaviour
 
     void OnMouseDown()
     {
+        /*
         selectRef = Instantiate(tileSelector) as GameObject;
         selectRef.transform.position = transform.position; 
         SpriteRenderer sr = selectRef.GetComponent<SpriteRenderer>();
         sr.enabled = true;
-
-        Debug.Log("Tile " + selectRef.transform.position.ToString() + " clicked");
+        */
+        Debug.Log("Tile " + transform.position.ToString() + " clicked");
+        map.lastTileClicked = this;
     }
 
     //Getters/Setters

@@ -10,7 +10,10 @@ public class Map : MonoBehaviour
     private float minXPos;
     private float minYPos;
 
-
+    public Tile lastTileClicked; // Tiles themselves set this
+    public Tile selectedTile;
+    private static GameObject tileSelector;
+    private GameObject selectRef;
     public Map()
     {
         mapMaxX = 20;
@@ -20,8 +23,11 @@ public class Map : MonoBehaviour
         Camera camera = Camera.main;
         mWorldBound.center = camera.transform.position;
         mWorldBound.size = new Vector2(camera.orthographicSize * 2, camera.orthographicSize * 2);
-        minXPos = mWorldBound.min.y;
-        minYPos = mWorldBound.min.x;
+        minXPos = mWorldBound.min.x - 2;
+        minYPos = mWorldBound.min.y;
+
+        lastTileClicked = null;
+        selectedTile = null;
     }
 
     public Map(int width, int height)
@@ -53,6 +59,12 @@ public class Map : MonoBehaviour
         {
             tile = Resources.Load("Prefabs/Tile") as GameObject;
         }
+
+        if (tileSelector == null)
+        {
+            tileSelector = Resources.Load("Prefabs/TileSelector") as GameObject;
+        }
+        selectRef = null;
 
         drawMap();
 	}
@@ -98,6 +110,18 @@ public class Map : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
     {
-	
+        if (lastTileClicked != null)
+        {
+            selectedTile = lastTileClicked;
+            if (selectRef != null)
+            {
+                DestroyObject(selectRef);
+            }
+            selectRef = Instantiate(tileSelector) as GameObject;
+            selectRef.transform.position = selectedTile.transform.position;
+            SpriteRenderer sr = selectRef.GetComponent<SpriteRenderer>();
+            sr.enabled = true;
+            lastTileClicked = null;
+        }
 	}
 }
