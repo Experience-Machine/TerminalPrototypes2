@@ -91,6 +91,12 @@ public class Map : MonoBehaviour
         map[x, y].tileRenderer.color = c;
     }
 
+    public void setTileColor(Tile t, Color c)
+    {
+        t.currentColor = c;
+        t.tileRenderer.color = c;
+    }
+
     public void highlightPlus(int x, int y, Color c)
     {
         if (y > 0)
@@ -109,6 +115,34 @@ public class Map : MonoBehaviour
         if (y < mapMaxY)
         {
             setTileColor(x, y + 1, c);
+        }
+    }
+
+    public void highlightTiles(Tile[] tiles, Color c)
+    {
+        for(int i = 0; i < tiles.Length; i++)
+        {
+            setTileColor(tiles[i], c);
+        }
+    }
+
+    public void clearHighlights(Tile[] tiles)
+    {
+        for(int i = 0; i < tiles.Length; i++)
+        {
+            tiles[i].currentColor = tiles[i].defaultColor;
+            tiles[i].tileRenderer.color = tiles[i].defaultColor;
+        }
+    }
+
+    public void clearAllHighlights()
+    {
+        for (int x = 0; x < mapMaxX; x++)
+        {
+            for (int y = 0; y < mapMaxY; y++)
+            {
+                map[x, y].currentColor = map[x, y].defaultColor;
+            }
         }
     }
 
@@ -181,6 +215,8 @@ public class Map : MonoBehaviour
                 map[x, y].transform.parent = gameObject.transform;
                 map[x, y].transform.position = new Vector2(minXPos + x + (map[x, y].transform.localScale.x / 2f), //Start drawing tiles at the upper left corner
                                                            minYPos + y + (map[x, y].transform.localScale.y / 2f));
+                map[x, y].x = x;
+                map[x, y].y = y;
             }
         }
     }

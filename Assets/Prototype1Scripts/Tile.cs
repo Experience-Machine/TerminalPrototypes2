@@ -8,10 +8,13 @@ public class Tile : MonoBehaviour
     private static Map map;
     public SpriteRenderer tileRenderer;
 
+    public int x, y;
+
     // The present color of the tile. This can be temporarily change
     //  by mouseover, but the tile returns to 'curent color' after
     //  mouse-out.
     public Color currentColor;
+    public Color defaultColor;
     private static Color highlightColor = new Color(.3f,.3f,.3f,.15f);
 
     //private static GameObject tileSelector;
@@ -30,7 +33,8 @@ public class Tile : MonoBehaviour
             tileRenderer = gameObject.GetComponent<SpriteRenderer>();
         }
         //renderer.enabled = true;
-        currentColor = Color.grey;
+        defaultColor = Color.grey;
+        currentColor = defaultColor;
         tileRenderer.color = currentColor;
 
         /*
