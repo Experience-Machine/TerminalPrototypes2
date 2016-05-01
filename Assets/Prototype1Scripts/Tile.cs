@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class TileBehavior : MonoBehaviour
+public class Tile : MonoBehaviour
 {
 
     private bool collideable;
-    private SpriteRenderer renderer;
+    public SpriteRenderer tileRenderer;
 
     private static GameObject tileSelector;
     private GameObject selectRef;
@@ -14,10 +14,12 @@ public class TileBehavior : MonoBehaviour
     {
 
         collideable = false;
-
-        renderer = gameObject.GetComponent<SpriteRenderer>();
+        if (tileRenderer == null)
+        {
+            tileRenderer = gameObject.GetComponent<SpriteRenderer>();
+        }
         //renderer.enabled = true;
-        renderer.color = Color.grey;
+        tileRenderer.color = Color.grey;
 
         if (tileSelector == null)
         {
@@ -35,11 +37,8 @@ public class TileBehavior : MonoBehaviour
 
     void OnMouseEnter()
     {
-        
         //renderer.enabled = true;
-        renderer.color = Color.cyan;
-        //SpriteRenderer sr = selectRef.GetComponent<SpriteRenderer>();
-        //sr.enabled = true;
+        tileRenderer.color = Color.cyan;
 
         //Debug.Log(selectRef.transform.position.ToString() + " collideable: " + collideable);
 
@@ -47,10 +46,10 @@ public class TileBehavior : MonoBehaviour
     void OnMouseExit()
     {
         //renderer.enabled = true;
-        renderer.color = Color.grey;
+        tileRenderer.color = Color.grey;
 
         //Destroy(selectRef);
-        selectRef = null;
+        //selectRef = null;
         
     }
 

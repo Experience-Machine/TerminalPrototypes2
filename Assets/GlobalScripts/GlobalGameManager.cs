@@ -5,17 +5,20 @@ using UnityEngine.SceneManagement;
 // for SceneManager
 using System.Collections;
 
-public class GlobalGameManager : MonoBehaviour {
+public class GlobalGameManager : MonoBehaviour 
+{
 
 	private string mCurrentLevel = "MenuLevel";  //  
 
 	// Use this for initialization
-	void Start () {
+	void Start () 
+    {
 		DontDestroyOnLoad(this);
 	}
 
 	// 
-	public void SetCurrentLevel(string level) {
+	public void SetCurrentLevel(string level)
+    {
 		mCurrentLevel = level;
     }
 
