@@ -7,8 +7,8 @@ public class Level1GameState : MonoBehaviour
 {
     private static GameObject tile; // Tile prefab
     public static GameObject[,] map; // Actual tile map
-    public int mapMaxX = 4;
-    public int mapMaxY = 5;
+    public int mapMaxX = 20;
+    public int mapMaxY = 10;
 
     private Bounds mWorldBound;  // this is the world bound
     public Vector2 mWorldMin;	// Better support 2D interactions
@@ -34,7 +34,9 @@ public class Level1GameState : MonoBehaviour
             for (int y = 0; y < mapMaxY; y++)
             {
                 map[x, y] = Instantiate(tile) as GameObject;
-                map[x, y].transform.position = new Vector2(mWorldBound.min.x + x + .5f, mWorldBound.min.y + y + .5f);
+                map[x, y].transform.position = new Vector2(mWorldBound.min.x + x + (map[x,y].transform.localScale.x / 2f), //Start drawing tiles at the upper left corner
+                                                           mWorldBound.min.y + y + (map[x, y].transform.localScale.y / 2f));
+               
             }
         }
 	}

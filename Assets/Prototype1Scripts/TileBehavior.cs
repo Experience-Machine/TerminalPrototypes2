@@ -3,12 +3,16 @@ using System.Collections;
 
 public class TileBehavior : MonoBehaviour
 {
-    private Renderer renderer;
+    private SpriteRenderer renderer;
+   
     // Use this for initialization
     void Start () 
     {
-        renderer = GetComponent<Renderer>();
-        renderer.enabled = false;
+        renderer = gameObject.GetComponent<SpriteRenderer>();
+        renderer.enabled = true;
+        renderer.color = Color.grey;
+
+        
     }
        
     // Update is called once per frame
@@ -19,11 +23,20 @@ public class TileBehavior : MonoBehaviour
 
     void OnMouseEnter()
     {
+        
         renderer.enabled = true;
-        renderer.material.color = Color.white;
+        renderer.color = Color.cyan;
+ 
     }
     void OnMouseExit()
     {
-        renderer.enabled = false;
+        renderer.enabled = true;
+        renderer.color = Color.grey;
+        
+    }
+
+    void OnMouseDown()
+    {
+
     }
 }
