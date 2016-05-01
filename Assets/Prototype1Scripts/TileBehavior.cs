@@ -16,7 +16,7 @@ public class TileBehavior : MonoBehaviour
         collideable = false;
 
         renderer = gameObject.GetComponent<SpriteRenderer>();
-        renderer.enabled = true;
+        //renderer.enabled = true;
         renderer.color = Color.grey;
 
         if (tileSelector == null)
@@ -36,29 +36,32 @@ public class TileBehavior : MonoBehaviour
     void OnMouseEnter()
     {
         
-        renderer.enabled = true;
-        //renderer.color = Color.cyan;
-        selectRef = Instantiate(tileSelector) as GameObject;
-        selectRef.transform.position = transform.position;
-        SpriteRenderer sr = selectRef.GetComponent<SpriteRenderer>();
-        sr.enabled = true;
+        //renderer.enabled = true;
+        renderer.color = Color.cyan;
+        //SpriteRenderer sr = selectRef.GetComponent<SpriteRenderer>();
+        //sr.enabled = true;
 
-        Debug.Log(selectRef.transform.position.ToString() + " collideable: " + collideable);
+        //Debug.Log(selectRef.transform.position.ToString() + " collideable: " + collideable);
 
     }
     void OnMouseExit()
     {
-        renderer.enabled = true;
+        //renderer.enabled = true;
         renderer.color = Color.grey;
 
-        Destroy(selectRef);
+        //Destroy(selectRef);
         selectRef = null;
         
     }
 
     void OnMouseDown()
     {
+        selectRef = Instantiate(tileSelector) as GameObject;
+        selectRef.transform.position = transform.position; 
+        SpriteRenderer sr = selectRef.GetComponent<SpriteRenderer>();
+        sr.enabled = true;
 
+        Debug.Log("Tile " + selectRef.transform.position.ToString() + " clicked");
     }
 
     //Getters/Setters
