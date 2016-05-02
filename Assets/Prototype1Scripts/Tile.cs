@@ -88,7 +88,7 @@ public class Tile : MonoBehaviour
         SpriteRenderer sr = selectRef.GetComponent<SpriteRenderer>();
         sr.enabled = true;
         */
-        Debug.Log("Tile " + transform.position.ToString() + " clicked");
+        //Debug.Log("Tile " + transform.position.ToString() + " clicked");
         map.lastTileClicked = this;
     }
 

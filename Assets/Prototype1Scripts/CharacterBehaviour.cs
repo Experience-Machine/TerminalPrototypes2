@@ -69,7 +69,7 @@ public class CharacterBehaviour : MonoBehaviour
                     //move(map.selectedTile.x, map.selectedTile.y);
                     movementRange = map.getMovementRangeTiles(posX, posY, 3);
                     map.highlightTiles(movementRange, movementHighlight);
-                    currentPath = buildPathToTile(map.selectedTile.x, map.selectedTile.y); 
+                    currentPath = buildPathToTile(map.selectedTile.x, map.selectedTile.y, movementRange); 
                     setStartAndEnd();
                     state = CharacterState.Moving;
                 }
@@ -98,9 +98,10 @@ public class CharacterBehaviour : MonoBehaviour
         {
 
             currentPath.incrementPathStep();
-            if (currentPath.getPathStep() < currentPath.getNumSteps()) {
+            if (currentPath.getPathStep() < currentPath.getNumSteps()) 
+            {
                 setStartAndEnd();
-                Debug.Log("Current path step: " + currentPath.getStep().ToString());
+                //Debug.Log("Current path step: " + currentPath.getStep().ToString());
                 //Debug.Log("Subsequent: " + startPosition + " " + endPosition);
             } 
             else
@@ -123,9 +124,9 @@ public class CharacterBehaviour : MonoBehaviour
         if (currentStep.x == Path.VERTICAL) //Vertical step
         {
             endPosition = map.getTile(posX, posY + (int)currentStep.y).transform.position;
-            Debug.Log("Subsequent: " + startPosition + " " + endPosition);
-            Debug.Log("Position: " + posY);
-            Debug.Log("CurrentStep.y: " + (int)currentStep.y);
+            //Debug.Log("Subsequent: " + startPosition + " " + endPosition);
+            //Debug.Log("Position: " + posY);
+            //Debug.Log("CurrentStep.y: " + (int)currentStep.y);
             posY = posY + (int)currentStep.y;
         }
         else if (currentStep.x == Path.HORIZONTAL) //Horizontal step
@@ -155,8 +156,143 @@ public class CharacterBehaviour : MonoBehaviour
         return path;
     }
 
-    private void pathFind()
+    private Path buildPathToTile(int tileX, int tileY, Tile[] tileList)
     {
+        Path path = (Path)ScriptableObject.CreateInstance(typeof(Path));
+        Vector2 dstPos = new Vector2(tileX, tileY);
+        List<Tile> openTiles = new List<Tile>(tileList);
+        List<Tile> closedTiles = new List<Tile>();
+        Tile throwawayTile = movementRange[0];
+        path = pathFind(posX, posY, dstPos, openTiles, closedTiles, path, throwawayTile, 99);
 
+        if (path == null)
+        {
+            Debug.Log("Null path!");
+            return buildPathToTile(tileX, tileY);
+        }
+
+        Debug.Log("Path: " + path.ToString());
+
+        return path;
+    }
+
+    private Path pathFind(int tileX, int tileY, Vector2 dstPos, List<Tile> openTiles, List<Tile> closedTiles, Path p, Tile t, int bestDist)
+    {
+        if(tileX == dstPos.x && tileY == dstPos.y)
+        {
+            return p;
+        }
+
+        int newBest = 0;
+        List<int> bestTypes = new List<int>();
+        Path originalPath = p.clone();
+
+        t = map.getTile(tileX - 1, tileY);
+        if (openTiles.Contains(t))
+        {
+            newBest = (int)(Mathf.Abs(t.x - dstPos.x) + Mathf.Abs(t.y - dstPos.y) + Mathf.Abs(t.x - posX) + Mathf.Abs(t.y - posY));
+            if(newBest <= bestDist)
+            {
+                if (newBest != bestDist)
+                    bestTypes.Clear();
+                bestDist = newBest;
+                bestTypes.Add(1);
+            }
+        }
+
+        t = map.getTile(tileX, tileY - 1);
+        if (openTiles.Contains(t))
+        {
+            newBest = (int)(Mathf.Abs(t.x - dstPos.x) + Mathf.Abs(t.y - dstPos.y) + Mathf.Abs(t.x - posX) + Mathf.Abs(t.y - posY));
+            if (newBest <= bestDist)
+            {
+                if (newBest != bestDist)
+                    bestTypes.Clear();
+                bestDist = newBest;
+                bestTypes.Add(2);
+            }
+        }
+
+        t = map.getTile(tileX + 1, tileY);
+        if (openTiles.Contains(t))
+        {
+            newBest = (int)(Mathf.Abs(t.x - dstPos.x) + Mathf.Abs(t.y - dstPos.y) + Mathf.Abs(t.x - posX) + Mathf.Abs(t.y - posY));
+            if (newBest <= bestDist)
+            {
+                if (newBest != bestDist)
+                    bestTypes.Clear();
+                bestDist = newBest;
+                bestTypes.Add(3);
+            }
+        }
+
+        t = map.getTile(tileX, tileY + 1);
+        if (openTiles.Contains(t))
+        {
+            newBest = (int)(Mathf.Abs(t.x - dstPos.x) + Mathf.Abs(t.y - dstPos.y) + Mathf.Abs(t.x - posX) + Mathf.Abs(t.y - posY));
+            if (newBest <= bestDist)
+            {
+                if (newBest != bestDist)
+                    bestTypes.Clear();
+                bestDist = newBest;
+                bestTypes.Add(4);
+            }
+        }
+        int bestType = 0;
+        for(int i = 0; i < bestTypes.Count; i++)
+        {
+            bestType = bestTypes[i];
+            
+            p = originalPath.clone();
+
+            switch (bestType)
+            {
+                case 1:
+                    t = map.getTile(tileX - 1, tileY);
+                    openTiles.Remove(t);
+                    closedTiles.Add(t);
+                    p.addStep(Path.HORIZONTAL, -1);
+                    p = pathFind(tileX - 1, tileY, dstPos, openTiles, closedTiles, p, t, bestDist);
+                    if (p != null)
+                    {
+                        return p;
+                    }
+                    break;
+                case 2:
+                    t = map.getTile(tileX, tileY - 1);
+                    openTiles.Remove(t);
+                    closedTiles.Add(t);
+                    p.addStep(Path.VERTICAL, -1);
+                    p = pathFind(tileX, tileY - 1, dstPos, openTiles, closedTiles, p, t, bestDist);
+                    if (p != null)
+                    {
+                        return p;
+                    }
+                    break;
+                case 3:
+                    t = map.getTile(tileX + 1, tileY);
+                    openTiles.Remove(t);
+                    closedTiles.Add(t);
+                    p.addStep(Path.HORIZONTAL, 1);
+                    p = pathFind(tileX + 1, tileY, dstPos, openTiles, closedTiles, p, t, bestDist);
+                    if (p != null)
+                    {
+                        return p;
+                    }
+                    break;
+                case 4:
+                    t = map.getTile(tileX, tileY + 1);
+                    openTiles.Remove(t);
+                    closedTiles.Add(t);
+                    p.addStep(Path.VERTICAL, 1);
+                    p = pathFind(tileX, tileY + 1, dstPos, openTiles, closedTiles, p, t, bestDist);
+                    if (p != null)
+                    {
+                        return p;
+                    }
+                    break;
+            }
+        }
+        return null;
     }
 }

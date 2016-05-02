@@ -4,12 +4,12 @@ using System.Collections.Generic;
 
 public class Path : ScriptableObject {
 
-    List<Vector2> path;
+    protected List<Vector2> path;
 
     public static int VERTICAL = 0;
     public static int HORIZONTAL = 1;
 
-    private int pathStep;
+    protected int pathStep;
 
     public Path ()
     {
@@ -51,5 +51,15 @@ public class Path : ScriptableObject {
     public void incrementPathStep()
     {
         pathStep++;
+    }
+
+    // Create a clone of this Path
+    public Path clone()
+    {
+        Path p = (Path)ScriptableObject.CreateInstance(typeof(Path));
+        Vector2[] pA = path.ToArray();
+        p.path = new List<Vector2>(pA);
+
+        return p;
     }
 }
