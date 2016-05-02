@@ -19,8 +19,8 @@ public class Path : ScriptableObject {
 
     public void addStep(int orientation, int numTiles)
     {
-        Vector2 pathStep = new Vector2(orientation, numTiles);
-        path.Add(pathStep);
+        Vector2 pathNode = new Vector2(orientation, numTiles);
+        path.Add(pathNode);
     }
 
     public Vector2 getStep()

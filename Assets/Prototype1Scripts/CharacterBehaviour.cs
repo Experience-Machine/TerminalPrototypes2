@@ -15,7 +15,7 @@ public class CharacterBehaviour : MonoBehaviour
 
     private Map map;
     private Tile[] movementRange;
-    Color movementHighlight = new Color(0, 1f, 1f, .3f);
+    Color movementHighlight = new Color(0, 0, 1f, .3f);
 
     private List<Path> possiblePaths;
     private Path currentPath; //Current path for move state
@@ -32,7 +32,8 @@ public class CharacterBehaviour : MonoBehaviour
         posX = 3;
         posY = 3;
         move(posX, posY);
-        movementRange = map.getRangeTiles(3, 3, 3);
+        movementRange = map.getMovementRangeTiles(3, 3, 3);
+        map.highlightTiles(movementRange, movementHighlight);
 
         possiblePaths = new List<Path>();
 
@@ -66,7 +67,7 @@ public class CharacterBehaviour : MonoBehaviour
                 {
                     map.clearHighlights(movementRange);
                     //move(map.selectedTile.x, map.selectedTile.y);
-                    movementRange = map.getRangeTiles(posX, posY, 3);
+                    movementRange = map.getMovementRangeTiles(posX, posY, 3);
                     map.highlightTiles(movementRange, movementHighlight);
                     currentPath = buildPathToTile(map.selectedTile.x, map.selectedTile.y); 
                     setStartAndEnd();
@@ -101,12 +102,13 @@ public class CharacterBehaviour : MonoBehaviour
                 setStartAndEnd();
                 Debug.Log("Current path step: " + currentPath.getStep().ToString());
                 //Debug.Log("Subsequent: " + startPosition + " " + endPosition);
-            } else
+            } 
+            else
             {
                 state = CharacterState.Selected;
                 map.selectedTile = null;
                 map.clearHighlights(movementRange);
-                movementRange = map.getRangeTiles(posX, posY, 3);
+                movementRange = map.getMovementRangeTiles(posX, posY, 3);
                 map.highlightTiles(movementRange, movementHighlight);
             }
         }

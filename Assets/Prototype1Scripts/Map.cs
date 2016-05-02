@@ -114,6 +114,12 @@ public class Map : MonoBehaviour
         t.tileRenderer.color = c;
     }
 
+    public void setTileHighlight(Tile t, Color c)
+    {
+        t.currentColor += c;
+        t.tileRenderer.color = t.currentColor;
+    }
+
     public void highlightPlus(int x, int y, Color c)
     {
         if (y > 0)
@@ -139,7 +145,7 @@ public class Map : MonoBehaviour
     {
         for(int i = 0; i < tiles.Length; i++)
         {
-            setTileColor(tiles[i], c);
+            setTileHighlight(tiles[i], c);
         }
     }
 
@@ -163,12 +169,64 @@ public class Map : MonoBehaviour
         }
     }
 
-    public Tile[] getRangeTiles(int x, int y, int range)
+    public Tile[] getMovementRangeTiles(int x, int y, int range)
     {
         Tile start = getTile(x, y);
         List<Tile> t = new List<Tile>();
-        getRangeTileHelper(x, y, range, t);
+        getMovementRangeTileHelper(x, y, range, t);
         t.Remove(start);
+        Tile[] tiles = new Tile[t.Count];
+        tiles = t.ToArray();
+        return tiles;
+    }
+    private void getMovementRangeTileHelper(int x, int y, int range, List<Tile> t)
+    {
+        if (range == 0)
+            return;
+        Tile workingTile;
+
+        workingTile = getTile(x - 1, y);
+        if (workingTile != null && !workingTile.isCollideable())
+        {
+            if (!t.Contains(workingTile))
+            {
+                t.Add(workingTile);
+            }
+            getMovementRangeTileHelper(x - 1, y, range - 1, t);
+        }
+        workingTile = getTile(x, y - 1);
+        if (workingTile != null && !workingTile.isCollideable())
+        {
+            if (!t.Contains(workingTile))
+            {
+                t.Add(workingTile);
+            }
+            getMovementRangeTileHelper(x, y - 1, range - 1, t);
+        }
+        workingTile = getTile(x + 1, y);
+        if (workingTile != null && !workingTile.isCollideable())
+        {
+            if (!t.Contains(workingTile))
+            {
+                t.Add(workingTile);
+            }
+            getMovementRangeTileHelper(x + 1, y, range - 1, t);
+        }
+        workingTile = getTile(x, y + 1);
+        if (workingTile != null && !workingTile.isCollideable())
+        {
+            if (!t.Contains(workingTile))
+            {
+                t.Add(workingTile);
+            }
+            getMovementRangeTileHelper(x, y + 1, range - 1, t);
+        }
+    }
+
+    public Tile[] getRangeTiles(int x, int y, int range)
+    {
+        List<Tile> t = new List<Tile>();
+        getRangeTileHelper(x, y, range, t);
         Tile[] tiles = new Tile[t.Count];
         tiles = t.ToArray();
         return tiles;
@@ -181,28 +239,28 @@ public class Map : MonoBehaviour
         Tile workingTile;
         
         workingTile = getTile(x - 1, y);
-        if (workingTile != null && !t.Contains(workingTile))
+        if (workingTile != null && !t.Contains(workingTile) && !workingTile.isCollideable())
         {
             t.Add(workingTile);
         }
         getRangeTileHelper(x - 1, y, range - 1, t);
 
         workingTile = getTile(x, y - 1);
-        if (workingTile != null && !t.Contains(workingTile))
+        if (workingTile != null && !t.Contains(workingTile) && !workingTile.isCollideable())
         {
             t.Add(workingTile);
         }
         getRangeTileHelper(x, y - 1, range - 1, t);
 
         workingTile = getTile(x + 1, y);
-        if (workingTile != null && !t.Contains(workingTile))
+        if (workingTile != null && !t.Contains(workingTile) && !workingTile.isCollideable())
         {
             t.Add(workingTile);
         }
         getRangeTileHelper(x + 1, y, range - 1, t);
 
         workingTile = getTile(x, y + 1);
-        if (workingTile != null && !t.Contains(workingTile))
+        if (workingTile != null && !t.Contains(workingTile) && !workingTile.isCollideable())
         {
             t.Add(workingTile);
         }
