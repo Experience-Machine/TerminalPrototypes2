@@ -16,6 +16,7 @@ public class CharacterBehaviour : MonoBehaviour
     private Map map;
     private Tile[] movementRange;
     Color movementHighlight = new Color(0, 0, 1f, .3f);
+    private const int MOVEMENT_RANGE = 4;
 
     private List<Path> possiblePaths;
     private Path currentPath; //Current path for move state
@@ -32,7 +33,7 @@ public class CharacterBehaviour : MonoBehaviour
         posX = 3;
         posY = 3;
         move(posX, posY);
-        movementRange = map.getMovementRangeTiles(3, 3, 3);
+        movementRange = map.getMovementRangeTiles(3, 3, MOVEMENT_RANGE);
         map.highlightTiles(movementRange, movementHighlight);
 
         possiblePaths = new List<Path>();
@@ -67,7 +68,7 @@ public class CharacterBehaviour : MonoBehaviour
                 {
                     map.clearHighlights(movementRange);
                     //move(map.selectedTile.x, map.selectedTile.y);
-                    movementRange = map.getMovementRangeTiles(posX, posY, 3);
+                    movementRange = map.getMovementRangeTiles(posX, posY, MOVEMENT_RANGE);
                     map.highlightTiles(movementRange, movementHighlight);
                     currentPath = buildPathToTile(map.selectedTile.x, map.selectedTile.y, movementRange); 
                     setStartAndEnd();
@@ -109,7 +110,7 @@ public class CharacterBehaviour : MonoBehaviour
                 state = CharacterState.Selected;
                 map.selectedTile = null;
                 map.clearHighlights(movementRange);
-                movementRange = map.getMovementRangeTiles(posX, posY, 3);
+                movementRange = map.getMovementRangeTiles(posX, posY, MOVEMENT_RANGE);
                 map.highlightTiles(movementRange, movementHighlight);
             }
         }
@@ -163,7 +164,7 @@ public class CharacterBehaviour : MonoBehaviour
         List<Tile> openTiles = new List<Tile>(tileList);
         List<Tile> closedTiles = new List<Tile>();
         Tile throwawayTile = movementRange[0];
-        path = pathFind(posX, posY, dstPos, openTiles, closedTiles, path, throwawayTile, 99);
+        path = pathFind(posX, posY, dstPos, openTiles, closedTiles, path, throwawayTile, 0, 99);
 
         if (path == null)
         {
@@ -176,7 +177,7 @@ public class CharacterBehaviour : MonoBehaviour
         return path;
     }
 
-    private Path pathFind(int tileX, int tileY, Vector2 dstPos, List<Tile> openTiles, List<Tile> closedTiles, Path p, Tile t, int bestDist)
+    private Path pathFind(int tileX, int tileY, Vector2 dstPos, List<Tile> openTiles, List<Tile> closedTiles, Path p, Tile t, int dist, int bestDist)
     {
         if(tileX == dstPos.x && tileY == dstPos.y)
         {
@@ -190,7 +191,7 @@ public class CharacterBehaviour : MonoBehaviour
         t = map.getTile(tileX - 1, tileY);
         if (openTiles.Contains(t))
         {
-            newBest = (int)(Mathf.Abs(t.x - dstPos.x) + Mathf.Abs(t.y - dstPos.y) + Mathf.Abs(t.x - posX) + Mathf.Abs(t.y - posY));
+            newBest = (int)(Mathf.Abs(t.x - dstPos.x) + Mathf.Abs(t.y - dstPos.y) + dist);
             if(newBest <= bestDist)
             {
                 if (newBest != bestDist)
@@ -203,7 +204,7 @@ public class CharacterBehaviour : MonoBehaviour
         t = map.getTile(tileX, tileY - 1);
         if (openTiles.Contains(t))
         {
-            newBest = (int)(Mathf.Abs(t.x - dstPos.x) + Mathf.Abs(t.y - dstPos.y) + Mathf.Abs(t.x - posX) + Mathf.Abs(t.y - posY));
+            newBest = (int)(Mathf.Abs(t.x - dstPos.x) + Mathf.Abs(t.y - dstPos.y) + dist);
             if (newBest <= bestDist)
             {
                 if (newBest != bestDist)
@@ -216,7 +217,7 @@ public class CharacterBehaviour : MonoBehaviour
         t = map.getTile(tileX + 1, tileY);
         if (openTiles.Contains(t))
         {
-            newBest = (int)(Mathf.Abs(t.x - dstPos.x) + Mathf.Abs(t.y - dstPos.y) + Mathf.Abs(t.x - posX) + Mathf.Abs(t.y - posY));
+            newBest = (int)(Mathf.Abs(t.x - dstPos.x) + Mathf.Abs(t.y - dstPos.y) + dist);
             if (newBest <= bestDist)
             {
                 if (newBest != bestDist)
@@ -229,7 +230,7 @@ public class CharacterBehaviour : MonoBehaviour
         t = map.getTile(tileX, tileY + 1);
         if (openTiles.Contains(t))
         {
-            newBest = (int)(Mathf.Abs(t.x - dstPos.x) + Mathf.Abs(t.y - dstPos.y) + Mathf.Abs(t.x - posX) + Mathf.Abs(t.y - posY));
+            newBest = (int)(Mathf.Abs(t.x - dstPos.x) + Mathf.Abs(t.y - dstPos.y) + dist);
             if (newBest <= bestDist)
             {
                 if (newBest != bestDist)
@@ -252,7 +253,7 @@ public class CharacterBehaviour : MonoBehaviour
                     openTiles.Remove(t);
                     closedTiles.Add(t);
                     p.addStep(Path.HORIZONTAL, -1);
-                    p = pathFind(tileX - 1, tileY, dstPos, openTiles, closedTiles, p, t, bestDist);
+                    p = pathFind(tileX - 1, tileY, dstPos, openTiles, closedTiles, p, t, dist++, bestDist);
                     if (p != null)
                     {
                         return p;
@@ -263,7 +264,7 @@ public class CharacterBehaviour : MonoBehaviour
                     openTiles.Remove(t);
                     closedTiles.Add(t);
                     p.addStep(Path.VERTICAL, -1);
-                    p = pathFind(tileX, tileY - 1, dstPos, openTiles, closedTiles, p, t, bestDist);
+                    p = pathFind(tileX, tileY - 1, dstPos, openTiles, closedTiles, p, t, dist++, bestDist);
                     if (p != null)
                     {
                         return p;
@@ -274,7 +275,7 @@ public class CharacterBehaviour : MonoBehaviour
                     openTiles.Remove(t);
                     closedTiles.Add(t);
                     p.addStep(Path.HORIZONTAL, 1);
-                    p = pathFind(tileX + 1, tileY, dstPos, openTiles, closedTiles, p, t, bestDist);
+                    p = pathFind(tileX + 1, tileY, dstPos, openTiles, closedTiles, p, t, dist++, bestDist);
                     if (p != null)
                     {
                         return p;
@@ -285,7 +286,7 @@ public class CharacterBehaviour : MonoBehaviour
                     openTiles.Remove(t);
                     closedTiles.Add(t);
                     p.addStep(Path.VERTICAL, 1);
-                    p = pathFind(tileX, tileY + 1, dstPos, openTiles, closedTiles, p, t, bestDist);
+                    p = pathFind(tileX, tileY + 1, dstPos, openTiles, closedTiles, p, t, dist++, bestDist);
                     if (p != null)
                     {
                         return p;
