@@ -17,3 +17,5 @@ EditorBuildSettings:
     path: Assets/Prototype4.unity
   - enabled: 1
     path: Assets/Prototype5.unity
+  - enabled: 1
+    path: Assets/Prototype6.unity

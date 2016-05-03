@@ -223,6 +223,94 @@ public class Map : MonoBehaviour
         }
     }
 
+    // This method is fed in a unit's movement range and returns the 
+    //  tiles of units within that range + 1 that the unit can attack
+    //  via melee. This method does not discriminate between teams; 
+    //  that must be done by the unit calling the method.
+    public Tile[] getMeleeRange(int x, int y, int range)
+    {
+        range++;
+        List<Tile> t = new List<Tile>();
+        List<Tile> units = new List<Tile>();
+        getMeleeRangeTileHelper(x, y, range, t, units);
+        Debug.Log("UnitList: " + units);
+        Tile[] unitList = new Tile[units.Count];
+        unitList = units.ToArray();
+        return unitList;
+    }
+    private void getMeleeRangeTileHelper(int x, int y, int range, List<Tile> t, List<Tile> units)
+    {
+        if (range == 0)
+            return;
+        Tile workingTile;
+
+        workingTile = getTile(x - 1, y);
+        if (workingTile != null)
+        {
+            if (workingTile.hasUnit)
+            {
+                units.Add(workingTile);
+            }
+            if (!workingTile.isCollideable())
+            {
+                if (!t.Contains(workingTile))
+                {
+                    t.Add(workingTile);
+                }
+                getMeleeRangeTileHelper(x - 1, y, range - 1, t, units);
+            }
+        }
+        workingTile = getTile(x, y - 1);
+        if (workingTile != null)
+        {
+            if (workingTile.hasUnit)
+            {
+                units.Add(workingTile);
+            }
+            if (!workingTile.isCollideable())
+            {
+                if (!t.Contains(workingTile))
+                {
+                    t.Add(workingTile);
+                }
+                getMeleeRangeTileHelper(x, y - 1, range - 1, t, units);
+            }
+        }
+        workingTile = getTile(x + 1, y);
+        if (workingTile != null)
+        {
+            if (workingTile.hasUnit)
+            {
+                units.Add(workingTile);
+            }
+            if (!workingTile.isCollideable())
+            {
+                if (!t.Contains(workingTile))
+                {
+                    t.Add(workingTile);
+                }
+                getMeleeRangeTileHelper(x + 1, y, range - 1, t, units);
+            }
+        }
+        workingTile = getTile(x, y + 1);
+        if (workingTile != null)
+        {
+            if (workingTile.hasUnit)
+            {
+                units.Add(workingTile);
+            }
+            if (!workingTile.isCollideable())
+            {
+                if (!t.Contains(workingTile))
+                {
+                    t.Add(workingTile);
+                }
+                getMeleeRangeTileHelper(x, y + 1, range - 1, t, units);
+            }
+        }
+    }
+
+
     public Tile[] getRangeTiles(int x, int y, int range)
     {
         List<Tile> t = new List<Tile>();

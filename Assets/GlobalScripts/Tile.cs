@@ -5,6 +5,7 @@ public class Tile : MonoBehaviour
 {
 
     public bool collideable;
+    public bool hasUnit;
     private static Map map;
     public SpriteRenderer tileRenderer;
 
@@ -53,6 +54,7 @@ public class Tile : MonoBehaviour
         currentColor = defaultColor;
         tileRenderer.color = currentColor;
         collideable = false;
+        hasUnit = false;
     }
 
     // Update is called once per frame
