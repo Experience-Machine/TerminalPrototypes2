@@ -2,28 +2,20 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class EnemyBehaviour : MonoBehaviour 
+public class CharacterBehaviour : MonoBehaviour 
 {
 
-    protected enum EnemyState
+    public enum CharacterState
     {
         Moving,
         Idle, 
-        Selected,
-        SelectMove,
-        ViewAttackRange,
-        Attacking
+        Selected
     };
-    private EnemyState state;
+    private CharacterState state;
 
     private Map map;
     private Tile[] movementRange;
-    private Tile[] meleeRange;
-    private Tile selectedTile;
-    private Tile selectedUnitTile;
-    private bool attacking;
     Color movementHighlight = new Color(0, 0, 1f, .3f);
-    Color attackHighlight = new Color(1f, 0, 0, .3f);
     private const int MOVEMENT_RANGE = 4;
 
     private List<Path> possiblePaths;
@@ -33,116 +25,83 @@ public class EnemyBehaviour : MonoBehaviour
     private Vector3 endPosition;
     private float currentLerpTime = 0;
 
-    private float timer; // For initial wait 
-
     int posX, posY;
-	// Use this for initialization
-	void Start () 
+    void Awake()
     {
         map = GameObject.Find("Map").GetComponent<Map>();
         posX = 3;
         posY = 3;
-        move(posX, posY);
+
         movementRange = map.getMovementRangeTiles(3, 3, MOVEMENT_RANGE);
-        map.highlightTiles(movementRange, movementHighlight);
+        //map.highlightTiles(movementRange, movementHighlight);
 
         possiblePaths = new List<Path>();
 
-        state = EnemyState.Selected;
+        //state = CharacterState.Selected;
         currentPath = null;
-        attacking = false;
-
-        timer = 0;
-	}
+    }
+	// Use this for initialization
+	void Start () 
+    {
+        Tile tileOn = map.getTile(posX, posY);
+        tileOn.setCollideable(true);
+        tileOn.charOnTile = this;
+    }
 	
+    public CharacterState getState()
+    {
+        return state;
+    }
+
+    public void setState(CharacterState cs)
+    {
+        state = cs;
+        if (state == CharacterState.Selected)
+        {
+            movementRange = map.getMovementRangeTiles(posX, posY, MOVEMENT_RANGE);
+            map.highlightTiles(movementRange, movementHighlight);
+        }
+    }
+
 	// Update is called once per frame
 	void Update () 
     {
-        timer += Time.deltaTime;
-        switch (state)
+	    switch(state)
         {
-            case EnemyState.Selected: serviceSelectedState(); break;
-            case EnemyState.SelectMove: serviceSelectMove(); break;
-            case EnemyState.Moving: serviceMoveState(); break;
-            case EnemyState.ViewAttackRange: serviceViewAttackRangeState(); break;
-            case EnemyState.Attacking: serviceAttackState(); break;
-            case EnemyState.Idle: break;
+            case CharacterState.Selected: serviceSelectedState(); break;
+            case CharacterState.Moving: serviceMoveState(); break;
+            case CharacterState.Idle: break;
         }
 	}
 
     private void serviceSelectedState()
     {
-        if (timer > 2f)
+        if (map.selectedTile != null)
         {
-            //map.clearHighlights(movementRange);
-            movementRange = map.getMovementRangeTiles(posX, posY, MOVEMENT_RANGE);
-            map.highlightTiles(movementRange, movementHighlight);
-            state = EnemyState.SelectMove;
-            timer = 0;
-        }
-    }
-
-    private void serviceSelectMove()
-    {
-        if (timer > 2f)
-        {
-            meleeRange = map.getMeleeRange(posX, posY, MOVEMENT_RANGE);
-            map.highlightTiles(meleeRange, attackHighlight);
-            if(meleeRange.Length > 0)
+            for (int i = 0; i < movementRange.Length; i++)
             {
-                List<Tile> moveTiles = new List<Tile>(movementRange);
-                selectedUnitTile = meleeRange[0];
-
-                selectedTile = map.getTile(meleeRange[0].x - 1, meleeRange[0].y);
-                if(moveTiles.Contains(selectedTile))
+                if (movementRange[i] == map.selectedTile)
                 {
-                    currentPath = buildPathToTile(selectedTile.x, selectedTile.y, movementRange);
+                    Tile tileOn = map.getTile(posX, posY);
+                    tileOn.setCollideable(false);
+                    tileOn.charOnTile = null;
+                    map.clearHighlights(movementRange);
+                    //move(map.selectedTile.x, map.selectedTile.y);
+                    movementRange = map.getMovementRangeTiles(posX, posY, MOVEMENT_RANGE);
+                    map.highlightTiles(movementRange, movementHighlight);
+                    currentPath = buildPathToTile(map.selectedTile.x, map.selectedTile.y, movementRange); 
                     setStartAndEnd();
-                    state = EnemyState.Moving;
-                    attacking = true;
-                    return;
-                }
 
-                selectedTile = map.getTile(meleeRange[0].x, meleeRange[0].y - 1);
-                if (moveTiles.Contains(selectedTile))
-                {
-                    currentPath = buildPathToTile(selectedTile.x, selectedTile.y, movementRange);
-                    setStartAndEnd();
-                    state = EnemyState.Moving;
-                    attacking = true;
-                    return;
-                }
+                    
 
-                selectedTile = map.getTile(meleeRange[0].x + 1, meleeRange[0].y);
-                if (moveTiles.Contains(selectedTile))
-                {
-                    currentPath = buildPathToTile(selectedTile.x, selectedTile.y, movementRange);
-                    setStartAndEnd();
-                    state = EnemyState.Moving;
-                    attacking = true;
-                    return;
-                }
-
-                selectedTile = map.getTile(meleeRange[0].x, meleeRange[0].y + 1);
-                if (moveTiles.Contains(selectedTile))
-                {
-                    currentPath = buildPathToTile(selectedTile.x, selectedTile.y, movementRange);
-                    setStartAndEnd();
-                    state = EnemyState.Moving;
-                    attacking = true;
-                    return;
+                    state = CharacterState.Moving;
                 }
             }
-            else
-            {
-                selectedTile = movementRange[(int)Random.Range(0, movementRange.Length)];
-                currentPath = buildPathToTile(selectedTile.x, selectedTile.y, movementRange);
-                setStartAndEnd();
-                state = EnemyState.Moving;
-            }
+
+            
+            
         }
     }
-
 
     //Current path should be defined if you're in move state
     private void serviceMoveState()
@@ -165,52 +124,25 @@ public class EnemyBehaviour : MonoBehaviour
             if (currentPath.getPathStep() < currentPath.getNumSteps()) 
             {
                 setStartAndEnd();
+                //Debug.Log("Current path step: " + currentPath.getStep().ToString());
+                //Debug.Log("Subsequent: " + startPosition + " " + endPosition);
             } 
             else
             {
-                if (attacking)
-                {
-                    state = EnemyState.ViewAttackRange;
-                }
-                else
-                {
-                    state = EnemyState.Selected;
-                }
-                timer = 0;
-                selectedTile = null;
+                Tile tileOn = map.getTile(posX, posY);
+                tileOn.setCollideable(true);
+                tileOn.charOnTile = this;
+
+                //state = CharacterState.Selected;
+                state = CharacterState.Idle;
+                map.selectedTile = null;
                 map.clearHighlights(movementRange);
-                map.clearHighlights(meleeRange);
+                //movementRange = map.getMovementRangeTiles(posX, posY, MOVEMENT_RANGE);
+                //map.highlightTiles(movementRange, movementHighlight);
             }
         }
     }
 
-    private void serviceViewAttackRangeState()
-    {
-        if (timer > 1f)
-        {
-            meleeRange = map.getRangeTiles(posX, posY, 1); // Melee range of 1
-            map.highlightTiles(meleeRange, attackHighlight);
-            state = EnemyState.Attacking;
-            timer = 0;
-        }
-    }
-
-    private void serviceAttackState()
-    {
-        if (timer > 1f)
-        {
-            selectedUnitTile.hasUnit = false;
-            map.setTileColor(selectedUnitTile, Color.black);
-            map.clearHighlights(meleeRange);
-            selectedUnitTile = null;
-            attacking = false;
-            state = EnemyState.Selected;
-            timer = 0;
-        }
-    }
-
-
-    #region Pathfinding
     //Set the beginning and ending points for one segment of a path
     private void setStartAndEnd()
     {
@@ -240,7 +172,6 @@ public class EnemyBehaviour : MonoBehaviour
         transform.position = map.getTile(x, y).transform.position;
     }
 
-    // The following assumes no obsticles, and makes a basic path to the tile
     private Path buildPathToTile(int tileX, int tileY)
     {
         Path path = (Path)ScriptableObject.CreateInstance(typeof(Path));
@@ -253,8 +184,6 @@ public class EnemyBehaviour : MonoBehaviour
         return path;
     }
 
-    // The following uses the tileList and takes into account obsticles, avoiding them
-    //  as it builds a path to the tile
     private Path buildPathToTile(int tileX, int tileY, Tile[] tileList)
     {
         Path path = (Path)ScriptableObject.CreateInstance(typeof(Path));
@@ -275,7 +204,6 @@ public class EnemyBehaviour : MonoBehaviour
         return path;
     }
 
-    // The following is a recursive method to help the tileList-based buildPath method
     private Path pathFind(int tileX, int tileY, Vector2 dstPos, List<Tile> openTiles, List<Tile> closedTiles, Path p, Tile t, int dist, int bestDist)
     {
         if(tileX == dstPos.x && tileY == dstPos.y)
@@ -395,5 +323,4 @@ public class EnemyBehaviour : MonoBehaviour
         }
         return null;
     }
-    #endregion
 }

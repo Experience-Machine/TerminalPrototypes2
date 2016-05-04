@@ -9,6 +9,9 @@ public class Tile : MonoBehaviour
     private static Map map;
     public SpriteRenderer tileRenderer;
 
+    public CharacterBehaviour charOnTile = null;
+    public EnemyBehaviour enemyOnTile = null;
+
     public int x, y;
 
     // The present color of the tile. This can be temporarily change
