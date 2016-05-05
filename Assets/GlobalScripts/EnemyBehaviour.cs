@@ -83,12 +83,12 @@ public class EnemyBehaviour : MonoBehaviour
         timer += Time.deltaTime;
         switch (state)
         {
+            case EnemyState.Idle: break;
             case EnemyState.Selected: serviceSelectedState(); break;
             case EnemyState.SelectMove: serviceSelectMove(); break;
             case EnemyState.Moving: serviceMoveState(); break;
             case EnemyState.ViewAttackRange: serviceViewAttackRangeState(); break;
             case EnemyState.Attacking: serviceAttackState(); break;
-            case EnemyState.Idle: break;
         }
 	}
 

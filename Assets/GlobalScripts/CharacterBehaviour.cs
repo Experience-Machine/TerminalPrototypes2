@@ -78,6 +78,7 @@ public class CharacterBehaviour : MonoBehaviour
         //  the character on it's next turn. Chance for a 
         //  revive! Maybe.
         setState(CharacterState.Dead);
+        gameObject.GetComponent<SpriteRenderer>().color = Color.gray;
     }
 
 	// Update is called once per frame
@@ -85,9 +86,10 @@ public class CharacterBehaviour : MonoBehaviour
     {
 	    switch(state)
         {
+            case CharacterState.Idle: break;
+            case CharacterState.Dead: break;
             case CharacterState.Selected: serviceSelectedState(); break;
             case CharacterState.Moving: serviceMoveState(); break;
-            case CharacterState.Idle: break;
         }
 	}
 

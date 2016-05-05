@@ -109,6 +109,7 @@ public class Tile : MonoBehaviour
     {
         if(charOnTile != null)
         {
+            hasUnit = false;
             charOnTile.kill();
         }
         else

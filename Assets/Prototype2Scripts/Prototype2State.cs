@@ -11,7 +11,8 @@ public class Prototype2State : MonoBehaviour
     {
         PlayerTurn,
         EnemyTurn,
-        Move
+        Move, 
+        Idle
     }
     LevelState state;
 
@@ -162,6 +163,7 @@ public class Prototype2State : MonoBehaviour
                     t.setCollideable(false);
                     t.charOnTile = null;
                     t.enemyOnTile = null;
+                    t.hasUnit = false;
                 }
             }
         }
@@ -188,9 +190,20 @@ public class Prototype2State : MonoBehaviour
             resetCollision();
             currentPlayer++;
             if (currentPlayer == characters.Count) currentPlayer = 0;
-            state = LevelState.EnemyTurn;
-            enemies[currentEnemy].setState(EnemyBehaviour.EnemyState.Selected);
-
+            while( characters[currentPlayer].getState() == CharacterBehaviour.CharacterState.Dead)
+            {
+                characters.Remove(characters[currentPlayer]);
+                if (currentPlayer == characters.Count) currentPlayer = 0;
+                if(characters.Count == 0)
+                {
+                    state = LevelState.Idle;
+                }
+            }
+            if (characters.Count > 0)
+            {
+                state = LevelState.EnemyTurn;
+                enemies[currentEnemy].setState(EnemyBehaviour.EnemyState.Selected);
+            }
             
         }
     }
