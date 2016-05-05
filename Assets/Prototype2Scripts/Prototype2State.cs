@@ -193,7 +193,19 @@ public class Prototype2State : MonoBehaviour
             resetCollision();
             currentPlayer++;
             if (currentPlayer == characters.Count) currentPlayer = 0;
-            while( characters[currentPlayer].getState() == CharacterBehaviour.CharacterState.Dead)
+
+            for (int i = 0; i < characters.Count; i++)
+            {
+                if (characters[i].getState() == CharacterBehaviour.CharacterState.Dead)
+                {
+                    characters.Remove(characters[i]);
+                }
+            }
+            if (characters.Count == 0)
+            {
+                 state = LevelState.Idle;
+            }
+            /*while ( characters[currentPlayer].getState() == CharacterBehaviour.CharacterState.Dead)
             {
                 characters.Remove(characters[currentPlayer]);
                 if (currentPlayer == characters.Count) currentPlayer = 0;
@@ -201,7 +213,7 @@ public class Prototype2State : MonoBehaviour
                 {
                     state = LevelState.Idle;
                 }
-            }
+            }*/
             if (characters.Count > 0)
             {
                 state = LevelState.EnemyTurn;
@@ -221,16 +233,20 @@ public class Prototype2State : MonoBehaviour
             if (currentEnemy == enemies.Count) currentEnemy = 0;
             state = LevelState.PlayerTurn;
 
-            // Just find the first non dead character (Not considering order here)
             for (int i = 0; i < characters.Count; i++)
             {
-                if (!(characters[i].getState() == CharacterBehaviour.CharacterState.Dead))
+                if (characters[i].getState() == CharacterBehaviour.CharacterState.Dead)
                 {
-                    currentPlayer = i;
+                    characters.Remove(characters[i]);
                 }
             }
 
-            characters[currentPlayer].setState(CharacterBehaviour.CharacterState.Selected);
+            if (currentPlayer >= characters.Count) currentPlayer = 0;
+
+            if (characters.Count == 0) state = LevelState.Idle;
+            else
+                characters[currentPlayer].setState(CharacterBehaviour.CharacterState.Selected);
+         
 
         }
     }
