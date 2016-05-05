@@ -35,7 +35,7 @@ public class EnemyBehaviour : MonoBehaviour
 
     private float timer; // For initial wait 
 
-    int posX, posY;
+    public int posX, posY;
 
     void Awake()
     {
@@ -57,9 +57,9 @@ public class EnemyBehaviour : MonoBehaviour
 	// Use this for initialization
 	void Start () 
     {
-        Tile tileOn = map.getTile(posX, posY);
-        tileOn.setCollideable(true);
-        tileOn.enemyOnTile = this;
+        //Tile tileOn = map.getTile(posX, posY);
+        //tileOn.setCollideable(true);
+        //tileOn.enemyOnTile = this;
     }
 
     public EnemyState getState()
@@ -97,9 +97,9 @@ public class EnemyBehaviour : MonoBehaviour
         if (timer > 2f)
         {
 
-            Tile tileOn = map.getTile(posX, posY);
-            tileOn.setCollideable(false);
-            tileOn.enemyOnTile = null;
+            //Tile tileOn = map.getTile(posX, posY);
+            //tileOn.setCollideable(false);
+            //tileOn.enemyOnTile = null;
 
             //map.clearHighlights(movementRange);
             movementRange = map.getMovementRangeTiles(posX, posY, MOVEMENT_RANGE);
@@ -208,9 +208,9 @@ public class EnemyBehaviour : MonoBehaviour
                 selectedTile = null;
                 map.clearHighlights(movementRange);
                 map.clearHighlights(meleeRange);
-                Tile tileOn = map.getTile(posX, posY);
-                tileOn.setCollideable(true);
-                tileOn.enemyOnTile = this;
+                //Tile tileOn = map.getTile(posX, posY);
+                //tileOn.setCollideable(true);
+                //tileOn.enemyOnTile = this;
             }
         }
     }

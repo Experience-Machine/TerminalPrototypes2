@@ -123,8 +123,6 @@ public class Prototype2State : MonoBehaviour
 
                 if (samePosAsEnemy) continue;
 
-
-
                 foundTile = true;
                 eb.move((int)randomX, (int)randomY);
                 enemies.Add(eb);
@@ -136,6 +134,7 @@ public class Prototype2State : MonoBehaviour
 
         characters[0].setState(CharacterBehaviour.CharacterState.Selected);
         state = LevelState.PlayerTurn;
+        resetCollision();
         
     }
 
@@ -150,14 +149,48 @@ public class Prototype2State : MonoBehaviour
         }
     }
 
+    void resetCollision()
+    {
+        //map.clearAllHighlights();
+        for (int i = 0; i < map.getMapSizeX(); i++)
+        {
+            for(int j = 0; j < map.getMapSizeY(); j++)
+            {
+                Tile t = map.getTile(i, j);
+                if (!(t.charOnTile == null && t.enemyOnTile == null && t.isCollideable()))
+                {
+                    t.setCollideable(false);
+                    t.charOnTile = null;
+                    t.enemyOnTile = null;
+                }
+            }
+        }
+        for (int i = 0; i < characters.Count; i++)
+        {
+            Tile tileOn = map.getTile(characters[i].posX, characters[i].posY);
+            tileOn.setCollideable(true);
+            tileOn.charOnTile = characters[i];
+        }
+
+        for (int i = 0; i < enemies.Count; i++)
+        {
+            Tile tileOn = map.getTile(enemies[i].posX, enemies[i].posY);
+            tileOn.setCollideable(true);
+            tileOn.enemyOnTile = enemies[i];
+        }
+    }
     void servicePlayerTurn()
     {
         if (characters[currentPlayer].getState() == CharacterBehaviour.CharacterState.Idle)
         {
+            map.clearAllHighlights();
+            resetCollision();
             currentPlayer++;
             if (currentPlayer == characters.Count) currentPlayer = 0;
             state = LevelState.EnemyTurn;
             enemies[currentEnemy].setState(EnemyBehaviour.EnemyState.Selected);
+
+            
         }
     }
 
@@ -165,6 +198,8 @@ public class Prototype2State : MonoBehaviour
     {
         if (enemies[currentEnemy].getState() == EnemyBehaviour.EnemyState.Idle)
         {
+            map.clearAllHighlights();
+            resetCollision();
             currentEnemy++;
             if (currentEnemy == enemies.Count) currentEnemy = 0;
             state = LevelState.PlayerTurn;

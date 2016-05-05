@@ -86,7 +86,17 @@ public class Map : MonoBehaviour
 
         drawMap();
     }
-	
+
+    public int getMapSizeX()
+    {
+        return mapMaxX;
+    }
+
+    public int getMapSizeY()
+    {
+        return mapMaxY;
+    }
+
     public Tile getTile(int x, int y)
     {
         if (x >= 0 && x < mapMaxX && y >= 0 && y < mapMaxY)
