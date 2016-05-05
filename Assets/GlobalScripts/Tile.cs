@@ -111,6 +111,7 @@ public class Tile : MonoBehaviour
         {
             hasUnit = false;
             charOnTile.kill();
+            charOnTile = null;
         }
         else
         {

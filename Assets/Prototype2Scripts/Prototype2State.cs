@@ -169,10 +169,13 @@ public class Prototype2State : MonoBehaviour
         }
         for (int i = 0; i < characters.Count; i++)
         {
-            Tile tileOn = map.getTile(characters[i].posX, characters[i].posY);
-            tileOn.setCollideable(true);
-            tileOn.hasUnit = true;
-            tileOn.charOnTile = characters[i];
+            if (characters[i].getState() != CharacterBehaviour.CharacterState.Dead)
+            {
+                Tile tileOn = map.getTile(characters[i].posX, characters[i].posY);
+                tileOn.setCollideable(true);
+                tileOn.hasUnit = true;
+                tileOn.charOnTile = characters[i];
+            }
         }
 
         for (int i = 0; i < enemies.Count; i++)
