@@ -132,10 +132,10 @@ public class Prototype2State : MonoBehaviour
         currentPlayer = 0;
         currentEnemy = 0;
 
+        
+        resetCollision();
         characters[0].setState(CharacterBehaviour.CharacterState.Selected);
         state = LevelState.PlayerTurn;
-        resetCollision();
-        
     }
 
     // Update is called once per frame
@@ -169,6 +169,7 @@ public class Prototype2State : MonoBehaviour
         {
             Tile tileOn = map.getTile(characters[i].posX, characters[i].posY);
             tileOn.setCollideable(true);
+            tileOn.hasUnit = true;
             tileOn.charOnTile = characters[i];
         }
 

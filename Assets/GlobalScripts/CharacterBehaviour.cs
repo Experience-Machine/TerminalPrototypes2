@@ -9,7 +9,8 @@ public class CharacterBehaviour : MonoBehaviour
     {
         Moving,
         Idle, 
-        Selected
+        Selected,
+        Dead
     };
     private CharacterState state;
 
@@ -68,6 +69,15 @@ public class CharacterBehaviour : MonoBehaviour
             //tileOn.setCollideable(true);
 
         }
+    }
+
+    // Kill this character off
+    public void kill()
+    {
+        // This will cause the turn-based system to remove
+        //  the character on it's next turn. Chance for a 
+        //  revive! Maybe.
+        setState(CharacterState.Dead);
     }
 
 	// Update is called once per frame

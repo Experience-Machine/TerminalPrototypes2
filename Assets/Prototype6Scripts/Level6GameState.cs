@@ -51,6 +51,9 @@ public class Level6GameState : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
     {
-
+        if(enemyBeh.getState() == EnemyBehaviour.EnemyState.Idle)
+        {
+            enemyBeh.setState(EnemyBehaviour.EnemyState.Selected);
+        }
 	}
 }

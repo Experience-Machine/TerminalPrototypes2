@@ -112,6 +112,20 @@ public class Map : MonoBehaviour
         return null;
     }
 
+    public void setPermanentTileColor(int x, int y, Color c)
+    {
+        map[x, y].defaultColor = c;
+        map[x, y].currentColor = c;
+        map[x, y].tileRenderer.color = c;
+    }
+
+    public void setPermanentTileColor(Tile t, Color c)
+    {
+        t.defaultColor = c;
+        t.currentColor = c;
+        t.tileRenderer.color = c;
+    }
+
     public void setTileColor(int x, int y, Color c)
     {
         map[x, y].currentColor = c;
@@ -337,28 +351,28 @@ public class Map : MonoBehaviour
         Tile workingTile;
         
         workingTile = getTile(x - 1, y);
-        if (workingTile != null && !t.Contains(workingTile) && !workingTile.isCollideable())
+        if (workingTile != null && !t.Contains(workingTile))
         {
             t.Add(workingTile);
         }
         getRangeTileHelper(x - 1, y, range - 1, t);
 
         workingTile = getTile(x, y - 1);
-        if (workingTile != null && !t.Contains(workingTile) && !workingTile.isCollideable())
+        if (workingTile != null && !t.Contains(workingTile))
         {
             t.Add(workingTile);
         }
         getRangeTileHelper(x, y - 1, range - 1, t);
 
         workingTile = getTile(x + 1, y);
-        if (workingTile != null && !t.Contains(workingTile) && !workingTile.isCollideable())
+        if (workingTile != null && !t.Contains(workingTile))
         {
             t.Add(workingTile);
         }
         getRangeTileHelper(x + 1, y, range - 1, t);
 
         workingTile = getTile(x, y + 1);
-        if (workingTile != null && !t.Contains(workingTile) && !workingTile.isCollideable())
+        if (workingTile != null && !t.Contains(workingTile))
         {
             t.Add(workingTile);
         }

@@ -5,10 +5,12 @@ public class Tile : MonoBehaviour
 {
 
     public bool collideable;
-    public bool hasUnit;
     private static Map map;
     public SpriteRenderer tileRenderer;
 
+    // hasUnit is currently intended to show if a tile holds *specifically* a player 
+    //  character unit. (This was early implem.)
+    public bool hasUnit;
     public CharacterBehaviour charOnTile = null;
     public EnemyBehaviour enemyOnTile = null;
 
@@ -95,6 +97,33 @@ public class Tile : MonoBehaviour
         */
         //Debug.Log("Tile " + transform.position.ToString() + " clicked");
         map.lastTileClicked = this;
+    }
+
+    // This method can be used one of two ways:
+    //  1) There is a unit present on this tile. In this case, the tile will 
+    //      call the kill enemy on the unit present on the tile.
+    //  2) There is something special about this tile that allows it to be
+    //       destroyable. In this case, it will call the killThisTile method on
+    //       itself.
+    public void killTile()
+    {
+        if(charOnTile != null)
+        {
+            charOnTile.kill();
+        }
+        else
+        {
+            killThisTile();
+        }
+    }
+
+    void killThisTile()
+    {
+        // Temporary kill this tile info
+        hasUnit = false;
+        defaultColor = Color.black;
+        currentColor = Color.black;
+        tileRenderer.color = Color.black;
     }
 
     //Getters/Setters
