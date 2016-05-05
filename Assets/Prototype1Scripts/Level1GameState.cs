@@ -31,6 +31,7 @@ public class Level1GameState : MonoBehaviour
 
         characterBeh.gameObject.transform.position = new Vector2(-3.5f, -1.5f);
         characterBeh.setState(CharacterBehaviour.CharacterState.Selected);
+        characterBeh.move(3, 3);
 
         //Randomly generate some collideable tiles
         for (int i = 0; i < 10; i++) 

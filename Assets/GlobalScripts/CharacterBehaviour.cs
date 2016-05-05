@@ -29,7 +29,10 @@ public class CharacterBehaviour : MonoBehaviour
     void Awake()
     {
         map = GameObject.Find("Map").GetComponent<Map>();
-        
+        posX = 3;
+        posY = 3;
+
+        movementRange = map.getMovementRangeTiles(3, 3, MOVEMENT_RANGE);
         //movementRange = map.getMovementRangeTiles(posX, posY, MOVEMENT_RANGE);
         //map.highlightTiles(movementRange, movementHighlight);
 
