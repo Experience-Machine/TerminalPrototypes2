@@ -220,7 +220,18 @@ public class Prototype2State : MonoBehaviour
             currentEnemy++;
             if (currentEnemy == enemies.Count) currentEnemy = 0;
             state = LevelState.PlayerTurn;
+
+            // Just find the first non dead character (Not considering order here)
+            for (int i = 0; i < characters.Count; i++)
+            {
+                if (!(characters[i].getState() == CharacterBehaviour.CharacterState.Dead))
+                {
+                    currentPlayer = i;
+                }
+            }
+
             characters[currentPlayer].setState(CharacterBehaviour.CharacterState.Selected);
+
         }
     }
 
