@@ -43,7 +43,7 @@ public class EnemyBehaviour : MonoBehaviour
         posX = 3;
         posY = 3;
         //move(posX, posY);
-        movementRange = map.getMovementRangeTiles(3, 3, MOVEMENT_RANGE);
+        movementRange = map.getMovementRangeTiles(posX, posY, MOVEMENT_RANGE);
         //map.highlightTiles(movementRange, movementHighlight);
 
         possiblePaths = new List<Path>();

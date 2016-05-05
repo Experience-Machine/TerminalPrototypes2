@@ -30,7 +30,6 @@ public class Level6GameState : MonoBehaviour
         }
 
         enemyBeh.gameObject.transform.position = new Vector2(-3.5f, -1.5f);
-        enemyBeh.setState(EnemyBehaviour.EnemyState.Selected);
 
         //Randomly generate some collideable tiles
         for (int i = 0; i < 10; i++) 
@@ -46,6 +45,7 @@ public class Level6GameState : MonoBehaviour
             map.setTileColor(t, Color.green);
         }
 
+        enemyBeh.setState(EnemyBehaviour.EnemyState.Selected);
     }
 
 	// Update is called once per frame
