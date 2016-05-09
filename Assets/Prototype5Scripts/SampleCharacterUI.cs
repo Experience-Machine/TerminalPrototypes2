@@ -8,9 +8,8 @@ public class SampleCharacterUI : MonoBehaviour {
 
     public GameObject charUI = null;
     public GameObject charUIInstance = null;
-    public ArrayList availableActions;
-    public int maxHealth;
-    public int curHealth;
+    public float maxHealth;
+    public float curHealth;
     public string characterName;
     public Sprite s;
 
@@ -20,15 +19,11 @@ public class SampleCharacterUI : MonoBehaviour {
             charUI = Resources.Load("Prefabs/CharacterUI") as GameObject;
         }
 
-        availableActions = new ArrayList();
-        availableActions.Add("Thread");
-        availableActions.Add("GarbageCollection");
-
-        maxHealth = 50;
-        curHealth = 22;
+        maxHealth = 50f;
+        curHealth = 22f;
         characterName = "Hi I'm a Sample Character";
 
-        s = Resources.Load("Resources/SharedTextures/hero", typeof(Sprite)) as Sprite;
+        s = Resources.Load("SharedTextures/hero", typeof(Sprite)) as Sprite;
 }
 	
 	// Update is called once per frame
@@ -42,7 +37,7 @@ public class SampleCharacterUI : MonoBehaviour {
        {
             charUIInstance = Instantiate(charUI) as GameObject;
             UIBehavior script = charUIInstance.GetComponent<UIBehavior>();
-            script.setContent(s, availableActions, maxHealth, curHealth, characterName);
+            script.setContent(s, maxHealth, curHealth, characterName);
        }
        else
         {
